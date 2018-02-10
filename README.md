@@ -5,7 +5,7 @@ TinyMusic
 
 A simple, lightweight music synth/sequencer in JavaScript using the Web Audio API.
 
-Here's a quick, hideous [demo](http://output.jsbin.com/pavelunima/1/edit?js,output).
+Here's a quick, hideous [demo](http://jsbin.com/nilepiviva/1/edit?js,output).
 
 You can also see (a slightly modified version of) TinyMusic in action in this [js13k entry](http://js13kgames.com/entries/crasis).
 
@@ -13,6 +13,18 @@ Available on npm via `npm install tinymusic`.
 
 
 ---
+
+## Changelog
+
+Version 1.0.0 removes some weirdness around module format.
+
+If you put `dist/TinyMusic.js` directly into your page with no
+RequireJS/browserify/etc, you'll get a global object called `TinyMusic` that
+exposes `Note` and `Sequence`.
+
+Otherwise, you should be able to `require('tinymusic')` with browserify,
+or `require('./node_modules/tinymusic/dist/TinyMusic.js')` with RequireJS,
+which will give you an object containing both `Note` and `Sequence`.
 
 ## Quick Start
 
@@ -27,12 +39,12 @@ var tempo = 120;
 
 // create some notes ('<Note Name> <Beat Length>')
 // q = quarter note, h = half note (more on that later)
-var note1 = new Note('G3 q');
-var note2 = new Note('E4 q');
-var note3 = new Note('C4 h');
+var note1 = new TinyMusic.Note('G3 q');
+var note2 = new TinyMusic.Note('E4 q');
+var note3 = new TinyMusic.Note('C4 h');
 
 // create a new sequence
-var sequence = new Sequence( ac, tempo );
+var sequence = new TinyMusic.Sequence( ac, tempo );
 
 // add the notes
 sequence.push( note1, note2, note3 );
@@ -55,7 +67,7 @@ var ac = new AudioContext();
 var tempo = 120;
 
 // create a new sequence
-var sequence = new Sequence( ac, tempo, [
+var sequence = new TinyMusic.Sequence( ac, tempo, [
   'G3 q',
   'E4 q',
   'C4 h'
@@ -72,7 +84,7 @@ sequence.play();
 
 ### Note
 
-The `Note` constructor only acceps one argument: a string that dictates note frequency and duration. An example input string might look like `'A4 q'`.
+The `Note` constructor only accepts one argument: a string that dictates note frequency and duration. An example input string might look like `'A4 q'`.
 
 In that example, `'A4'` refers to the frequency 440Hz ([more on that here](http://www.phy.mtu.edu/~suits/notefreqs.html)), and `'q'` means "quarter note".
 
@@ -109,7 +121,7 @@ The `loop` property is a boolean value that controls whether or not the sequence
 
 #### Sequence.smoothing
 
-The `smoothing` property controls portamento (smoothily sliding from one frequency to the next). The `smoothing` value should be a number between `0` (no smoothing) to `1` (lots of smoothing). The default value is `0`.
+The `smoothing` property controls portamento (smoothly sliding from one frequency to the next). The `smoothing` value should be a number between `0` (no smoothing) to `1` (lots of smoothing). The default value is `0`.
 
 #### Sequence.staccato
 
@@ -122,7 +134,7 @@ The `gain` property is a Web Audio [`GainNode`](http://webaudio.github.io/web-au
 There's too much to fully cover it here, but basically:
 
 ```js
-var sequence = new Sequence();
+var sequence = new TinyMusic.Sequence();
 
 // the double "gain" isn't a typo. the GainNode instance has a property
 // called "gain", which has a "value" that you can set
@@ -136,7 +148,7 @@ The `bass` property is a Web Audio [`BiquadFilterNode`](http://webaudio.github.i
 If that sounds scary, just know this: it's basically just an EQ slider that controls low-end frequencies (centered around 100Hz by default)
 
 ```js
-var sequence = new Sequence();
+var sequence = new TinyMusic.Sequence();
 
 // give the sequence some sweet, sweet bass (positive values add bass, negative values reduce it)
 sequence.bass.gain.value = 10;
@@ -159,7 +171,7 @@ The `waveType` property defines what kind of oscillator the sequence will use. B
 Creates a custom waveType to use with `Sequence.waveType = 'custom'`. This will create and set a [periodicWaveForm](https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode.setPeriodicWave) on the sequencer's OscillatorNode. `real` and `imaginary` should both be Arrays (they will be converted to Float32Array) and they must be the same length, or the AudioContext will generate an error. If no value is supplied for `imaginary`, `real` will be duplicated.
 
 ```js
-var sequence = new Sequence(ac, tempo, harmony);
+var sequence = new TinyMusic.Sequence(ac, tempo, harmony);
 sequence.play();
 
 // An electric piano/organy (The Doors-ish) sound
@@ -297,9 +309,9 @@ var ac = new AudioContext(),
   ];
 
 // create 3 new sequences (one for lead, one for harmony, one for bass)
-sequence1 = new Sequence( ac, tempo, lead );
-sequence2 = new Sequence( ac, tempo, harmony );
-sequence3 = new Sequence( ac, tempo, bass );
+sequence1 = new TinyMusic.Sequence( ac, tempo, lead );
+sequence2 = new TinyMusic.Sequence( ac, tempo, harmony );
+sequence3 = new TinyMusic.Sequence( ac, tempo, bass );
 
 // set staccato and smoothing values for maximum coolness
 sequence1.staccato = 0.55;
